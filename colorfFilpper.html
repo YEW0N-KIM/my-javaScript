@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>colorFilpper</title>
+    <style>
+        :root {
+            --main-skyblue : #49a7eb;
+            --main-black : #222;
+        }
+        * { margin: 0; padding: 0; font : 10px; overflow: hidden;}
+        .wrap { width: 100%; height: 100vh;}
+        header{ display: flex; justify-content: space-between; padding: 20px 50px; border-bottom: 1.5px solid var(--main-skyblue);}
+        header div { font-size: 1.5rem; font-weight: bold; text-align: center; width: 50%;}
+        header .header_text1{  color: var(--main-skyblue)}
+        .mainContent{ width: 100%; align-content: center; background-color: red; height: 100%;}
+        .mainContent_text{background-color: var(--main-black); width: 30%; margin: auto auto; color: white; text-align: center; font-size: 2rem; padding: 15px; border-radius: 10px;}
+        .mainContent_text input{color: var(--main-skyblue); font-size: 2rem; width: inherit; background-color: transparent; padding: 0; text-align: center; border: none;}
+        .mainContent_button{border: 1px solid black; width: 8%; font-size: 1.5rem; padding: 5px 10px; text-align: center; border-radius: 10px; margin: 50px auto;}
+        .mainContent_button:hover{background-color: var(--main-black); color: white; cursor: pointer;;}
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header>
+            <div class="header_text1">Color Filpper</div>
+            <div class="header_text2">Simple Hex</div>
+        </header>
+
+        <div class="mainContent">
+            <div class="mainContent_text"> BackGround Color : <input type="text" value="#FF0000"/></div>    
+            <div class="mainContent_button">Click Me</div>
+        </div>
+    </div>
+
+    <script>
+        function clickEvent(){
+            const testElement = document.createElement('div'); // 가짜 요소 생성
+            let colorCode = document.querySelector('.mainContent_text input').value;
+            testElement.style.backgroundColor = colorCode;
+           
+           if(testElement.style.backgroundColor){
+                document.querySelector('.mainContent').style.backgroundColor = colorCode;
+           } else{
+                alert("없는 색상 코드입니다.")
+           }
+        }
+        let button = document.querySelector('.mainContent_button');
+        button.addEventListener('click', clickEvent());
+        button.addEventListener('keydown', clickEvent());
+    </script>
+</body>
+</html>
