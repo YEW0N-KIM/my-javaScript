@@ -17,8 +17,9 @@
         .mainContent{ width: 100%; align-content: center; background-color: red; height: 100%;}
         .mainContent_text{background-color: var(--main-black); width: 30%; margin: auto auto; color: white; text-align: center; font-size: 2rem; padding: 15px; border-radius: 10px;}
         .mainContent_text input{color: var(--main-skyblue); font-size: 2rem; width: inherit; background-color: transparent; padding: 0; text-align: center; border: none;}
-        .mainContent_button{border: 1px solid black; width: 8%; font-size: 1.5rem; padding: 5px 10px; text-align: center; border-radius: 10px; margin: 50px auto;}
-        .mainContent_button:hover{background-color: var(--main-black); color: white; cursor: pointer;;}
+        .mainContent_button_wrap{display: flex; width: 40%; margin: 0 auto;}
+        .mainContent_button,.mainContent_button_random {border: 1px solid black; width: 30%; font-size: 1.5rem; padding: 5px 10px; text-align: center; border-radius: 10px; margin: 50px auto; box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, 0.5);}
+        .mainContent_button:hover, .mainContent_button_random:hover{background-color: var(--main-black); color: white; cursor: pointer;;}
     </style>
 </head>
 <body>
@@ -30,7 +31,10 @@
 
         <div class="mainContent">
             <div class="mainContent_text"> BackGround Color : <input type="text" value="#FF0000"/></div>    
-            <div class="mainContent_button">Click Me</div>
+            <div class="mainContent_button_wrap">
+                <div class="mainContent_button">Click Me</div>
+                <div class="mainContent_button_random">Random Color</div>
+            </div>
         </div>
     </div>
 
@@ -47,6 +51,25 @@
            }
         }
         let button = document.querySelector('.mainContent_button');
+
+        document.querySelector('.mainContent_button_random').addEventListener('click', function(){
+
+            // 랜덤 RGB
+            // const r = Math.floor(Math.random()*256);
+            // const g = Math.floor(Math.random()*256);
+            // const b = Math.floor(Math.random()*256);
+            // let colorCode = `rgb(${r},${b},${g})`
+
+            //랜덤 HEX (16진수)
+            const letters = '0123456789ABCDEF'
+            let colorCode = '#';
+            for(let i=0; i<6; i++){
+                colorCode += letters[Math.floor(Math.random()*16)];
+            }
+            document.querySelector('.mainContent_text input').value = colorCode;
+            document.querySelector('.mainContent').style.backgroundColor = colorCode;
+        });
+
         button.addEventListener('click', clickEvent());
         button.addEventListener('keydown', clickEvent());
     </script>
