@@ -24,5 +24,32 @@
             <div class="increase_btn">INCREASE</div>
         </div>
     </div>
+    <script>
+         let intervalId;
+        document.querySelector('.decrease_btn').addEventListener('mousedown', function(){
+            let count = document.querySelector('.content_text').textContent;
+            intervalId = setInterval(() => {
+                if (count > 0) {
+                   count = count-1
+                } else {
+                    alert("count 0입니다.")
+                    clearInterval(intervalId); // 숫자가 0이면 감소 중지
+                }
+            }, 100); // 100ms마다 감소
+        })
+
+        document.querySelector('.increase_btn').addEventListener('mouseup', function(){
+            let count = document.querySelector('.content_text').textContent;
+            console.log(count)
+            intervalId = setInterval(()=>{
+                if(count > 10000){
+                    alert("count가 10000입니다.")
+                    clearInterval(intervalId);
+                } else{
+                    count = count+1;
+                }
+            },100)
+        })
+    </script>
 </body>
 </html>
