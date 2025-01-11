@@ -25,31 +25,55 @@
         </div>
     </div>
     <script>
-         let intervalId;
-        document.querySelector('.decrease_btn').addEventListener('mousedown', function(){
-            let count = document.querySelector('.content_text').textContent;
+         let intervalId; // 반복 실행 ID 저장
+
+        const contentText = document.querySelector('.content_text');
+
+        // 숫자 감소 버튼
+        document.querySelector('.decrease_btn').addEventListener('mousedown', function() {
+            clearInterval(intervalId); // 이전 Interval 중단
             intervalId = setInterval(() => {
+                let count = parseInt(contentText.textContent, 10); // 문자열을 숫자로 변환
                 if (count > 0) {
-                   count = count-1
+                    count--;
+                    contentText.textContent = count; // 화면 갱신
                 } else {
-                    alert("count 0입니다.")
+                    alert("Count가 0입니다.");
                     clearInterval(intervalId); // 숫자가 0이면 감소 중지
                 }
             }, 100); // 100ms마다 감소
-        })
+        });
 
-        document.querySelector('.increase_btn').addEventListener('mouseup', function(){
-            let count = document.querySelector('.content_text').textContent;
-            console.log(count)
-            intervalId = setInterval(()=>{
-                if(count > 10000){
-                    alert("count가 10000입니다.")
-                    clearInterval(intervalId);
-                } else{
-                    count = count+1;
+        // 숫자 증가 버튼
+        document.querySelector('.increase_btn').addEventListener('mousedown', function() {
+            clearInterval(intervalId); // 이전 Interval 중단
+            intervalId = setInterval(() => {
+                let count = parseInt(contentText.textContent, 10);
+                if (count < 10000) {
+                    count++;
+                    contentText.textContent = count; // 화면 갱신
+                } else {
+                    alert("Count가 10000입니다.");
+                    clearInterval(intervalId); // 숫자가 10000이면 증가 중지
                 }
-            },100)
-        })
+            }, 100); // 100ms마다 증가
+        });
+
+        // RESET 버튼
+        document.querySelector('.reset_btn').addEventListener('click', function() {
+            clearInterval(intervalId); // Interval 중단
+            contentText.textContent = 0; // 카운트 초기화
+        });
+
+        // 마우스 버튼을 뗄 때 Interval 중단
+        document.body.addEventListener('mouseup', function() {
+            clearInterval(intervalId);
+        });
+
+        // 마우스가 버튼 영역을 벗어날 때 Interval 중단
+        document.body.addEventListener('mouseleave', function() {
+            clearInterval(intervalId);
+        });
     </script>
 </body>
 </html>
