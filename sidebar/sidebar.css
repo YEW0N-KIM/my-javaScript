@@ -1,20 +1,61 @@
-*{ padding: 0; margin: 0; overflow: hidden;}
+*{ padding: 0; margin: 0; overflow: hidden; font-size: 10px;}
 .sidebar{
     border: 1px solid black;
     width: 223px; height: 100vh;
 }
-.sidebar>.logo-details{
+.sidebar>.nav-top{
     width: 100%;
     /* border: 1px solid black; */
+    margin-top: 10px;
     display: flex; justify-content: flex-end;
 }
-.sidebar>.logo-details>.bx-menu{
+.sidebar>.nav-top>.top-icon{
     /* border: 1px solid black; */
     width: 30px; height: 30px;
     margin: 5px;
     background-image: url(https://img.icons8.com/android/30/forward.png);
 }
-.sidebar>.nav-links{
-    border: 1px solid black;
+.sidebar>.nav-middle{
+    /* border: 1px solid black; */
     width: 100%; height: 90%;
+}
+/* 메뉴 */
+.sidebar>.nav-middle{
+    margin-top: 20px;
+}
+.sidebar>.nav-middle .level-1{
+    /* border: 1px solid black; */
+    width: 85%;
+    padding: 5px 0; margin: 0 0 8px 25px;
+    display: flex; justify-content: space-between;
+    align-items: center;
+}
+.sidebar>.nav-middle .level-1 .level-1-icon{
+    /* border: 1px solid black; */
+    width: 30px; height: 25px;
+    background-image: url(https://img.icons8.com/plumpy/25/circled-menu--v1.png);
+}
+.sidebar>.nav-middle .level-1 .level-1-text{
+    width: 100%; padding: 0 0 0 10px;
+    font-size: 1.5rem;
+}
+.sidebar>.nav-middle .level-1 .level-1-arrow{
+    width: 15px; height: 15px; margin-right: 20px;
+    /* border: 1px solid black; */
+    background-image: url(https://img.icons8.com/android/15/forward.png);
+}
+
+/* 관리자 */
+.sidebar>.nav-bottom{
+    display: flex; justify-content: space-between;
+}
+.sidebar>.nav-bottom .bottom-icon{
+    width: 30px; height: 30px; margin: 10px 0px 5px 20px;
+    background-image: url(https://img.icons8.com/ultraviolet/30/test-account.png);
+}
+.sidebar>.nav-bottom>.link-name{
+    /* border: 1px solid black; */
+    width: 150px; margin-right: 10px;
+    text-align: left; align-content: center;
+    color: #050505;
 }
