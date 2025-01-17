@@ -6,6 +6,7 @@ mainList.forEach((main)=>{
         main.classList.add('active');
 
         let sub = main.closest('.level-2');
+        console.log(main);
         console.log(sub);
     });
 })

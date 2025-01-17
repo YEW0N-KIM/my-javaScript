@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .carousel {
+        position: relative;
+        max-width: 600px;
+        margin: auto;
+        overflow: hidden;
+        }
+
+        .carousel-container {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        }
+
+        .review {
+        flex: 0 0 100%;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+        }
+
+        button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 2rem;
+        }
+
+        .prev {
+        left: 10px;
+        }
+
+        .next {
+        right: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="carousel">
+        <div class="carousel-container">
+          <div class="review">
+            <p>"정말 훌륭한 서비스였습니다! 강력 추천해요."</p>
+            <h4>- 김철수</h4>
+          </div>
+          <div class="review">
+            <p>"배송도 빠르고 제품도 최고예요!"</p>
+            <h4>- 이영희</h4>
+          </div>
+          <div class="review">
+            <p>"매우 만족스러운 경험이었습니다."</p>
+            <h4>- 박민준</h4>
+          </div>
+        </div>
+        <button class="prev">〈</button>
+        <button class="next">〉</button>
+      </div>   
+      
+      <script>
+        const carouselContainer = document.querySelector('.carousel-container');
+        const reviews = document.querySelectorAll('.review');
+        const prevButton = document.querySelector('.prev');
+        const nextButton = document.querySelector('.next');
+
+        let currentIndex = 0;
+
+        function updateCarousel() {
+        const offset = -currentIndex * 100;
+        carouselContainer.style.transform = `translateX(${offset}%)`;
+        }
+
+        prevButton.addEventListener('click', () => {
+        currentIndex = (currentIndex > 0) ? currentIndex - 1 : reviews.length - 1;
+        updateCarousel();
+        });
+
+        nextButton.addEventListener('click', () => {
+        currentIndex = (currentIndex < reviews.length - 1) ? currentIndex + 1 : 0;
+        updateCarousel();
+        });
+
+      </script>
+</body>
+</html>
