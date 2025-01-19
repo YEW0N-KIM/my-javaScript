@@ -63,6 +63,39 @@
         .next {
             right: 10px;
         }
+        .indicators {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .indicator {
+            width: 10px;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .indicator.active {
+            background-color: #333;
+        }
+        .controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .controls button {
+            background-color: #fff;
+            border: none;
+            font-size: 1rem;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
     </style>
 </head>
 <body>
@@ -83,6 +116,15 @@
         </div>
         <button class="prev" aria-label="Previous Review">〈</button>
         <button class="next" aria-label="Next Review">〉</button>
+        <div class="indicators">
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+            <div class="indicator"></div>
+        </div>
+        <div class="controls">
+            <button class="pause">일시 정지</button>
+            <button class="play" style="display: none;">재생</button>
+        </div>
     </div>
 
     <script>
@@ -90,12 +132,31 @@
         const reviews = document.querySelectorAll('.review');
         const prevButton = document.querySelector('.prev');
         const nextButton = document.querySelector('.next');
+        const indicators = document.querySelectorAll('.indicator');
+        const pauseButton = document.querySelector('.pause');
+        const playButton = document.querySelector('.play');
 
         let currentIndex = 0;
+        let autoSlide = true;
+        let interval;
 
         function updateCarousel() {
             const offset = -currentIndex * 100;
             carouselContainer.style.transform = `translateX(${offset}%)`;
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function startAutoSlide() {
+            interval = setInterval(() => {
+                currentIndex = (currentIndex < reviews.length - 1) ? currentIndex + 1 : 0;
+                updateCarousel();
+            }, 5000);
+        }
+
+        function stopAutoSlide() {
+            clearInterval(interval);
         }
 
         prevButton.addEventListener('click', () => {
@@ -108,11 +169,27 @@
             updateCarousel();
         });
 
-        // Auto-slide every 5 seconds
-        setInterval(() => {
-            currentIndex = (currentIndex < reviews.length - 1) ? currentIndex + 1 : 0;
-            updateCarousel();
-        }, 5000);
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                currentIndex = index;
+                updateCarousel();
+            });
+        });
+
+        pauseButton.addEventListener('click', () => {
+            stopAutoSlide();
+            pauseButton.style.display = 'none';
+            playButton.style.display = 'inline-block';
+        });
+
+        playButton.addEventListener('click', () => {
+            startAutoSlide();
+            playButton.style.display = 'none';
+            pauseButton.style.display = 'inline-block';
+        });
+
+        startAutoSlide();
+        updateCarousel();
     </script>
 </body>
 </html>
