@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Improved Review Carousel</title>
+    <title>Advanced Review Carousel</title>
     <style>
         body {
             font-family: 'Roboto', Arial, sans-serif;
@@ -11,6 +11,11 @@
             padding: 0;
             background-color: #f9fafc;
             color: #333;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        .dark-mode {
+            background-color: #2c2c2c;
+            color: #e0e0e0;
         }
         .carousel {
             position: relative;
@@ -20,16 +25,27 @@
             border-radius: 10px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             background-color: #fff;
+            transition: background-color 0.5s;
+        }
+        .carousel.dark-mode {
+            background-color: #3a3a3a;
         }
         .carousel-container {
             display: flex;
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: transform 0.8s ease-in-out;
         }
         .review {
             flex: 0 0 100%;
             text-align: center;
             padding: 30px;
             box-sizing: border-box;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        .review.active {
+            opacity: 1;
+            transform: scale(1);
         }
         .review p {
             font-size: 1.2rem;
@@ -42,7 +58,7 @@
             color: #111;
             font-weight: bold;
         }
-        button {
+        .prev, .next {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
@@ -55,7 +71,7 @@
             border-radius: 50%;
             transition: background-color 0.3s, transform 0.2s;
         }
-        button:hover {
+        .prev:hover, .next:hover {
             background-color: #ddd;
             transform: scale(1.1);
         }
@@ -120,49 +136,60 @@
 </head>
 <body>
     <div class="carousel" aria-live="polite">
-        <div class="carousel-container">
-            <div class="review">
-                <p>"정말 훌륭한 서비스였습니다! 강력 추천해요."</p>
-                <h4>- 김철수</h4>
-            </div>
-            <div class="review">
-                <p>"배송도 빠르고 제품도 최고예요!"</p>
-                <h4>- 이영희</h4>
-            </div>
-            <div class="review">
-                <p>"매우 만족스러운 경험이었습니다."</p>
-                <h4>- 박민준</h4>
-            </div>
-        </div>
+        <div class="carousel-container"></div>
         <button class="prev" aria-label="Previous Review">〈</button>
         <button class="next" aria-label="Next Review">〉</button>
-        <div class="indicators">
-            <div class="indicator" aria-label="Go to review 1"></div>
-            <div class="indicator" aria-label="Go to review 2"></div>
-            <div class="indicator" aria-label="Go to review 3"></div>
-        </div>
+        <div class="indicators"></div>
         <div class="controls">
             <button class="pause">일시 정지</button>
             <button class="play" style="display: none;">재생</button>
+            <button class="toggle-theme">다크 모드</button>
         </div>
     </div>
 
     <script>
+        const reviewsData = [
+            { text: "정말 훌륭한 서비스였습니다! 강력 추천해요.", author: "김철수" },
+            { text: "배송도 빠르고 제품도 최고예요!", author: "이영희" },
+            { text: "매우 만족스러운 경험이었습니다.", author: "박민준" },
+        ];
+
         const carouselContainer = document.querySelector('.carousel-container');
-        const reviews = document.querySelectorAll('.review');
         const prevButton = document.querySelector('.prev');
         const nextButton = document.querySelector('.next');
-        const indicators = document.querySelectorAll('.indicator');
+        const indicatorsContainer = document.querySelector('.indicators');
         const pauseButton = document.querySelector('.pause');
         const playButton = document.querySelector('.play');
+        const themeToggleButton = document.querySelector('.toggle-theme');
+        const carousel = document.querySelector('.carousel');
 
         let currentIndex = 0;
         let autoSlide = true;
         let interval;
 
+        function renderReviews() {
+            carouselContainer.innerHTML = reviewsData.map(review => `
+                <div class="review">
+                    <p>"${review.text}"</p>
+                    <h4>- ${review.author}</h4>
+                </div>
+            `).join('');
+            carouselContainer.querySelectorAll('.review')[0].classList.add('active');
+
+            indicatorsContainer.innerHTML = reviewsData.map((_, index) => `
+                <div class="indicator" data-index="${index}" aria-label="Go to review ${index + 1}"></div>
+            `).join('');
+            indicatorsContainer.querySelectorAll('.indicator')[0].classList.add('active');
+        }
+
         function updateCarousel() {
-            const offset = -currentIndex * 100;
-            carouselContainer.style.transform = `translateX(${offset}%)`;
+            const reviews = carouselContainer.querySelectorAll('.review');
+            const indicators = indicatorsContainer.querySelectorAll('.indicator');
+
+            reviews.forEach((review, index) => {
+                review.classList.toggle('active', index === currentIndex);
+            });
+
             indicators.forEach((indicator, index) => {
                 indicator.classList.toggle('active', index === currentIndex);
             });
@@ -170,7 +197,7 @@
 
         function startAutoSlide() {
             interval = setInterval(() => {
-                currentIndex = (currentIndex < reviews.length - 1) ? currentIndex + 1 : 0;
+                currentIndex = (currentIndex + 1) % reviewsData.length;
                 updateCarousel();
             }, 5000);
         }
@@ -180,20 +207,13 @@
         }
 
         prevButton.addEventListener('click', () => {
-            currentIndex = (currentIndex > 0) ? currentIndex - 1 : reviews.length - 1;
+            currentIndex = (currentIndex - 1 + reviewsData.length) % reviewsData.length;
             updateCarousel();
         });
 
         nextButton.addEventListener('click', () => {
-            currentIndex = (currentIndex < reviews.length - 1) ? currentIndex + 1 : 0;
+            currentIndex = (currentIndex + 1) % reviewsData.length;
             updateCarousel();
-        });
-
-        indicators.forEach((indicator, index) => {
-            indicator.addEventListener('click', () => {
-                currentIndex = index;
-                updateCarousel();
-            });
         });
 
         pauseButton.addEventListener('click', () => {
@@ -208,8 +228,20 @@
             pauseButton.style.display = 'inline-block';
         });
 
+        indicatorsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('indicator')) {
+                currentIndex = parseInt(e.target.dataset.index, 10);
+                updateCarousel();
+            }
+        });
+
+        themeToggleButton.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            carousel.classList.toggle('dark-mode');
+        });
+
+        renderReviews();
         startAutoSlide();
-        updateCarousel();
     </script>
 </body>
 </html>
