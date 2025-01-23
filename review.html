@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Review Carousel</title>
+    <title>Enhanced Review Carousel</title>
     <style>
+        /* 기존 스타일 + 업데이트 */
         body {
             font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
@@ -58,6 +59,11 @@
             color: #111;
             font-weight: bold;
         }
+        .review small {
+            display: block;
+            font-size: 0.85rem;
+            color: #888;
+        }
         .prev, .next {
             position: absolute;
             top: 50%;
@@ -101,6 +107,15 @@
             background-color: #007bff;
             transform: scale(1.2);
         }
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background-color: #007bff;
+            width: 0;
+            transition: width 5s linear;
+        }
         .controls {
             position: absolute;
             top: 10px;
@@ -121,16 +136,31 @@
             background-color: #0056b3;
             transform: scale(1.1);
         }
-        @media (max-width: 768px) {
-            .carousel {
-                max-width: 90%;
-            }
-            .review p {
-                font-size: 1rem;
-            }
-            button {
-                font-size: 1rem;
-            }
+        .review-form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .review-form input, .review-form textarea, .review-form button {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .review-form button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .review-form button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -140,6 +170,7 @@
         <button class="prev" aria-label="Previous Review">〈</button>
         <button class="next" aria-label="Next Review">〉</button>
         <div class="indicators"></div>
+        <div class="progress-bar"></div>
         <div class="controls">
             <button class="pause">일시 정지</button>
             <button class="play" style="display: none;">재생</button>
@@ -147,11 +178,19 @@
         </div>
     </div>
 
+    <div class="review-form">
+        <h3>리뷰 추가하기</h3>
+        <input type="text" id="review-text" placeholder="리뷰 내용을 입력하세요" />
+        <input type="text" id="review-author" placeholder="작성자 이름" />
+        <textarea id="review-details" rows="3" placeholder="추가 정보 (선택 사항)"></textarea>
+        <button id="add-review">리뷰 추가</button>
+    </div>
+
     <script>
         const reviewsData = [
-            { text: "정말 훌륭한 서비스였습니다! 강력 추천해요.", author: "김철수" },
-            { text: "배송도 빠르고 제품도 최고예요!", author: "이영희" },
-            { text: "매우 만족스러운 경험이었습니다.", author: "박민준" },
+            { text: "정말 훌륭한 서비스였습니다! 강력 추천해요.", author: "김철수", date: "2025-01-23" },
+            { text: "배송도 빠르고 제품도 최고예요!", author: "이영희", date: "2025-01-22" },
+            { text: "매우 만족스러운 경험이었습니다.", author: "박민준", date: "2025-01-21" },
         ];
 
         const carouselContainer = document.querySelector('.carousel-container');
@@ -161,7 +200,11 @@
         const pauseButton = document.querySelector('.pause');
         const playButton = document.querySelector('.play');
         const themeToggleButton = document.querySelector('.toggle-theme');
+        const progressBar = document.querySelector('.progress-bar');
         const carousel = document.querySelector('.carousel');
+        const addReviewButton = document.querySelector('#add-review');
+        const reviewText = document.querySelector('#review-text');
+        const reviewAuthor = document.querySelector('#review-author');
 
         let currentIndex = 0;
         let autoSlide = true;
@@ -172,6 +215,7 @@
                 <div class="review">
                     <p>"${review.text}"</p>
                     <h4>- ${review.author}</h4>
+                    <small>${review.date}</small>
                 </div>
             `).join('');
             carouselContainer.querySelectorAll('.review')[0].classList.add('active');
@@ -193,6 +237,9 @@
             indicators.forEach((indicator, index) => {
                 indicator.classList.toggle('active', index === currentIndex);
             });
+
+            progressBar.style.width = "0";
+            setTimeout(() => progressBar.style.width = "100%", 50);
         }
 
         function startAutoSlide() {
@@ -200,10 +247,12 @@
                 currentIndex = (currentIndex + 1) % reviewsData.length;
                 updateCarousel();
             }, 5000);
+            progressBar.style.width = "100%";
         }
 
         function stopAutoSlide() {
             clearInterval(interval);
+            progressBar.style.width = "0";
         }
 
         prevButton.addEventListener('click', () => {
@@ -238,6 +287,19 @@
         themeToggleButton.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
             carousel.classList.toggle('dark-mode');
+        });
+
+        addReviewButton.addEventListener('click', () => {
+            const text = reviewText.value.trim();
+            const author = reviewAuthor.value.trim();
+            if (text && author) {
+                const today = new Date().toISOString().split('T')[0];
+                reviewsData.push({ text, author, date: today });
+                renderReviews();
+                updateCarousel();
+                reviewText.value = '';
+                reviewAuthor.value = '';
+            }
         });
 
         renderReviews();
